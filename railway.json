@@ -1,5 +1,5 @@
 {
-  "$schema": "n8n-railway-production-e136.up.railway.app",
+  "$schema": "https://n8n-railway-production-e136.up.railway.app",
   "build": {
     "builder": "DOCKERFILE",
     "dockerfilePath": "Dockerfile"
