@@ -1,14 +1,27 @@
+# Start from the official n8n image. You can use a specific version if needed.
 FROM n8nio/n8n:latest
 
-ENV NODE_ENV=production
-ENV GENERIC_TIMEZONE=UTC
-ENV N8N_METRICS=true
+# It's good practice to label your custom image
+LABEL maintainer="Your Name"
+LABEL description="Custom n8n image with additional Python libraries for PDF processing."
 
-# Expose port for Railway
-EXPOSE 5678
+# --- Force the configuration directly into the image ---
+# This makes the settings part of the container itself.
+ENV N8N_RUNNERS_ENABLED=true
+ENV N8N_PYTHON_EXECUTABLE=/usr/local/bin/python
+# --- End of forced configuration ---
 
-# Healthcheck to ensure container is running properly
-HEALTHCHECK --interval=30s --timeout=10s --retries=3 CMD wget -O- localhost:5678/metrics || exit 1
+# Switch to the root user to get permissions to install packages
+USER root
 
-# Start n8n
-CMD ["n8n", "start"] 
+# Copy the requirements file from your repository into the Docker image
+COPY requirements.txt .
+
+# Run the pip install command to install all libraries listed in the file
+RUN pip install -r requirements.txt --no-cache-dir
+
+# Clean up by removing the requirements file after installation
+RUN rm requirements.txt
+
+# IMPORTANT: Switch back to the default, non-root 'node' user that n8n runs as
+USER node
