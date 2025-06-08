@@ -15,9 +15,12 @@ USER root
 # Copy the requirements file from your repository into the Docker image
 COPY requirements.txt .
 
-# Run the pip install command using the absolute path to the python executable
-# This is the most robust method and will work.
-RUN /usr/local/bin/python -m pip install -r requirements.txt --no-cache-dir
+# --- The Final Fix ---
+# 1. Use Python's built-in 'ensurepip' to install pip.
+# 2. Use the newly installed pip to install the packages.
+# The '&&' links the commands, so they run in order.
+RUN /usr/local/bin/python -m ensurepip --upgrade && \
+    /usr/local/bin/python -m pip install --no-cache-dir -r requirements.txt
 
 # Clean up by removing the requirements file after installation
 RUN rm requirements.txt
