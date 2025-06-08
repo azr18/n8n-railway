@@ -5,15 +5,19 @@ FROM n8nio/n8n:latest
 LABEL maintainer="Your Name"
 LABEL description="Custom n8n image with additional Python libraries for PDF processing."
 
+# Force the configuration directly into the image
+ENV N8N_RUNNERS_ENABLED=true
+ENV N8N_PYTHON_EXECUTABLE=/usr/local/bin/python
+
 # Switch to the root user to get permissions to install packages
 USER root
 
 # Copy the requirements file from your repository into the Docker image
 COPY requirements.txt .
 
-# Run the pip install command to install all libraries listed in the file
+# Run the pip install command using pip3
 # --no-cache-dir is a good practice to keep the image size smaller
-RUN pip install -r requirements.txt --no-cache-dir
+RUN pip3 install -r requirements.txt --no-cache-dir
 
 # Clean up by removing the requirements file after installation
 RUN rm requirements.txt
