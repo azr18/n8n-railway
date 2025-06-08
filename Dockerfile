@@ -15,9 +15,9 @@ USER root
 # Copy the requirements file from your repository into the Docker image
 COPY requirements.txt .
 
-# Run the pip install command using pip3
-# --no-cache-dir is a good practice to keep the image size smaller
-RUN pip3 install -r requirements.txt --no-cache-dir
+# Run the pip install command using python's module flag for robustness
+# This is the line that fixes the error.
+RUN python -m pip install -r requirements.txt --no-cache-dir
 
 # Clean up by removing the requirements file after installation
 RUN rm requirements.txt
